@@ -1,4 +1,2 @@
-# qtile-cfg
 
-### qtile wm heavy customization
-
+## Personal dotfiles
