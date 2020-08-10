@@ -276,8 +276,13 @@ screens = [
 		 widget.KeyboardLayout(
 			padding = 5,
 			configured_keyboards = ['us', 'ara'],
-			
+			font = "Source Code Pro"
+                        foreground = color['light_blue'],
 			),
+ 		 widget.LaunchBar(
+                        padding = 5,
+                        progs = [('Calendar', 'google-calendar -h', 'Google Calendar'>
+                        ),
 		 widget.GroupBox(font="Ubuntu Bold",
                         fontsize = 9,
                         margin_y = 3,
@@ -295,7 +300,7 @@ screens = [
                         other_current_screen_border = color['light_grey'],
                         other_screen_border = color['grey'],
                         foreground = color['white'],
-                        background = color['black']
+                        font = "Source Code Pro",
                         ),
 		widget.WindowName(
                         foreground = color['green'],
