@@ -79,7 +79,7 @@ class Commands(object):
         # 'XF86MonBrightnessDown': 0x1008FF03,
 	#  xbacklight can have steps, but something wrong with RANDR ??
 	brightness_up = 'xrandr --output eDP-1-1 --brightness 1'
-	brightness_down = 'xrandr --output eDP-1-1 --brightness .50'
+	brightness_down = 'xrandr --output eDP-1-1 --brightness .75'
 	## 'XF86TouchpadToggle': 0x1008FFA9,
         ## 'XF86TouchpadOn': 0x1008FFB0,
         ## 'XF86TouchpadOff': 0x1008FFB1,
@@ -87,9 +87,9 @@ class Commands(object):
 	# https://help.ubuntu.com/community/SynapticsTouchpad/ShortcutKey
 	# https://help.ubuntu.com/community/SynapticsTouchpad
 	screenshot = 'gnome-screenshot' #XF86ScreenSaver??
-	double_monitor = 'xrandr --output eDP-1-1 --auto --primary --left-of HDMI-0'
+	double_monitor = 'xrandr --output eDP-1-1 --auto --primary --below HDMI-0'
 	kb_backlight = '' #xbacklight
-	kb_layout_toggle = './kblayout'
+	kb_layout_toggle = '.config/qtile/kblayout'
 
 ###  setup defaults
 color = dict(
@@ -193,10 +193,10 @@ keys = [
     Key([mod], "p", lazy.spawn(Commands.screenshot)),
 
     # Keyboard Layout -> toggle layout problem
-    # Key([mod], "", lazy.spawn(Commands.kb_layout_toggle)),
+    Key([mod], "Escape", lazy.spawn(Commands.kb_layout_toggle)),
 ]
 
-groups = [Group(i) for i in "1234"]
+groups = [Group(i) for i in "123456"]
 
 for i in groups:
     if (i == "4"):
@@ -276,12 +276,12 @@ screens = [
 		 widget.KeyboardLayout(
 			padding = 5,
 			configured_keyboards = ['us', 'ara'],
-			font = "Source Code Pro"
+			font = "Source Code Pro",
                         foreground = color['light_blue'],
 			),
  		 widget.LaunchBar(
                         padding = 5,
-                        progs = [('Calendar', 'google-calendar -h', 'Google Calendar'>
+                        progs = [('Calendar', 'google-calendar -h', 'Google Calendar')],
                         ),
 		 widget.GroupBox(font="Ubuntu Bold",
                         fontsize = 9,
@@ -300,7 +300,6 @@ screens = [
                         other_current_screen_border = color['light_grey'],
                         other_screen_border = color['grey'],
                         foreground = color['white'],
-                        font = "Source Code Pro",
                         ),
 		widget.WindowName(
                         foreground = color['green'],
@@ -308,20 +307,23 @@ screens = [
                         padding = 10
                         ),
 		widget.Notify(
-			margin = 6,
-			default_timeout = 3,
-			font = "Source Code Pro",
-			markup = True,
-			foreground = '#fa2772',
-			),
-		widget.Prompt(prompt=prompt,
+                        margin = 6,
+                        default_timeout = 3,
+                        font = "Source Code Pro",
+                        markup = True,
+                        foreground = '#fa2772',
+                        foreground_urgent = '#dddddd'
+                        ),
+
+		widget.Prompt(
+			prompt=prompt,
                         font="Source Code Pro",
                         padding=10,
                         cursor = True,
-                        cursor_color = 'bef098',
+                        cursor_color = '#bef098',
                         bell_style = 'None'
                         ),
-	                widget.TextBox(
+	        widget.TextBox(
 			foreground= color['light_blue'],
                         text=" 🖬",
                         padding = 0,
@@ -413,6 +415,17 @@ screens = [
                 widget.CurrentLayout(
                         padding = 5
                         ),
+		 widget.KeyboardLayout(
+                        padding = 5,
+                        configured_keyboards = ['us', 'ara'],
+                        font = "Source Code Pro",
+                        foreground = color['light_blue'],
+                        ),
+                 widget.LaunchBar(
+                        padding = 5,
+                        progs = [('Calendar', 'google-calendar -h', 'Google Calendar')],
+                        ),
+
 		widget.GroupBox(font="Ubuntu Bold",
                         fontsize = 9,
                         margin_y = 3,
@@ -444,6 +457,7 @@ screens = [
                         font = "Source Code Pro",
                         markup = True,
                         foreground = '#fa2772',
+			foreground_urgent = '#dddddd'
 			),
 		widget.TextBox(
                        text=" 🔊",
