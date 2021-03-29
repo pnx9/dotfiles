@@ -54,19 +54,19 @@ prompt = "{0}@{1}: ".format(os.environ["USER"], socket.gethostname())
 
 spawn_term = "st"
 
-wallpaper = os.path.expanduser('~/Pictures/Wallpapers/641062.jpg')
+wallpaper = os.path.expanduser('~/Pictures/Wallpapers/ghostinthehive.jpg')
 ###  Commands
 class Commands(object):
 	global spawn_term
 	firefox = 'firefox'
 	firefox_dev = 'firefox-developer-edition'
 	virtualbox = 'virtualbox'
-	filesystem_nautilus = 'nautilus -s /home/pnx9/'
+	filesystem_nautilus = 'nautilus -s /home/ghostinthehive/'
 	filesystem_ranger = spawn_term+' -e sh ./.config/qtile/ranger.sh'
 	launcher = 'dmenu_run -p "Run: "'
 	bluetooth_on = 'bluetooth on'
 	bluetooth_off = 'bluetooth off'
-	lockscreen = 'i3lock -t -i Pictures/Wallpapers/screenlock.png'
+	lockscreen = 'i3lock -t -i /home/ghostinthehive/Pictures/Wallpapers/Wallpaper_TheHive.png'
         ## 'XF86AudioLowerVolume': 0x1008FF11,
         ## 'XF86AudioMute': 0x1008FF12,
         ## 'XF86AudioRaiseVolume': 0x1008FF13,
@@ -88,6 +88,7 @@ class Commands(object):
 	# https://help.ubuntu.com/community/SynapticsTouchpad
 	screenshot = 'gnome-screenshot' #XF86ScreenSaver??
 	double_monitor = 'xrandr --output eDP-1-1 --auto --primary --below HDMI-0'
+	single_monitor = "feh --no-fehbg --bg-fill '/home/ghostinthehive/Pictures/Wallpapers/ghostinthehive.jpg'"
 	kb_backlight = '' #xbacklight
 	kb_layout_toggle = '.config/qtile/kblayout'
 
@@ -103,17 +104,19 @@ color = dict(
 	yellow='#edb54b',
 	grey='#282a36',
 	light_grey='#434758',
+	magenta='#c34f75'
 	)
 
 layout_defaults = dict(
-	border_width = 3,
+	border_width = 4,
 	margin = 10,
+#	border_normal = color['magenta'],
 	border_focus = color['blue'],
 	border_normal = color['white']
 	)
 
 bar_defaults = dict(
-	size = 24,
+	size = 25,
 	margin = 1,
 	background = color['black'],
 	)
@@ -125,6 +128,7 @@ widget_defaults = dict(
     background= color['black']
     )
 
+### KEYS
 keys = [
     # Switch between windows in current stack pane
     Key([mod], "k", lazy.layout.down()),
@@ -133,6 +137,12 @@ keys = [
     # Move windows up or down in current stack  -> same as Mod+space
     Key([mod, "control"], "k", lazy.layout.shuffle_down()),
     Key([mod, "control"], "j", lazy.layout.shuffle_up()),
+
+    # MonadTall windows size manipulation
+    Key([mod], "i", lazy.layout.grow()),
+    Key([mod], "m", lazy.layout.shrink()),
+    Key([mod], "n", lazy.layout.normalize()),
+    Key([mod], "o", lazy.layout.maximize()),
 
     # Switch window focus to other pane(s) of stack
     Key([mod], "space", lazy.layout.next()),
@@ -164,9 +174,12 @@ keys = [
     Key([mod, "shift"], "r", lazy.spawn(Commands.launcher)),
     Key([mod, "shift"], "b", lazy.spawn(Commands.bluetooth_on)),
     Key([mod, "shift"], "q", lazy.spawn(Commands.bluetooth_off)),
+
     # Display Fix: Double Monitor
     Key([mod, "shift"], "x", lazy.spawn(Commands.double_monitor),
-	desc='resolve the displays problem using xrandr'),
+	desc='resolve the single display wallpaper with feh'),
+    Key([mod, "shift"], "y", lazy.spawn(Commands.single_monitor),
+	desc='resolve single disblay with xrandr'),
 
     # toggle file system
     Key([mod], "g", lazy.spawn(Commands.filesystem_ranger)),
@@ -187,9 +200,11 @@ keys = [
 
     # Mic
     Key([], "XF86AudioMicMute", lazy.spawn(Commands.mic_toggle)),
+
     # brightness
     Key([], "XF86MonBrightnessUp", lazy.spawn(Commands.brightness_up)),
     Key([], "XF86MonBrightnessDown", lazy.spawn(Commands.brightness_down)),
+
     Key([mod], "p", lazy.spawn(Commands.screenshot)),
 
     # Keyboard Layout -> toggle layout problem
@@ -259,6 +274,8 @@ floating_layout = layout.Floating(
 
 
 extension_defaults = widget_defaults.copy()
+
+###  WIDGETS
 
 screens = [
     Screen(
@@ -348,7 +365,7 @@ screens = [
                         fontsize=16
                         ),
                 widget.Pacman(
-                        execute = "st",
+                        execute = "st -e sudo pacman -Syu",
                         update_interval = 1800,
                         ),
                 widget.TextBox(
@@ -384,7 +401,7 @@ screens = [
 			foreground= color['light_blue']
 			),
 		widget.Net(
-			interface='wlp7s0',
+			interface= None,
 			format = '{down}↓↑{up}',
 			),
 		widget.TextBox(
@@ -393,19 +410,18 @@ screens = [
 			foreground = color['light_blue']
 			),
 		widget.Clock(
-                        format="%A, %B %d  [ %H:%M ]"
+                        format="%A, %B %d [ %H:%M ]"
                         ),
 		widget.Systray(),
 		widget.TextBox(
 			text=' ',
 			),
-#               widget.QuickExit(),
             ],
 	    **bar_defaults),
 	wallpaper = wallpaper,
 	wallpaper_mode = 'fill'
     ),
-    Screen(
+ Screen(
 	top=bar.Bar([
 		widget.CurrentLayoutIcon(
                         custom_icon_paths=[os.path.expanduser("~/.config/qtile/icons")],
@@ -499,6 +515,7 @@ screens = [
     )
 ]
 
+
 # Drag floating layouts.
 mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(),
@@ -521,7 +538,7 @@ focus_on_window_activation = "smart"
 @hook.subscribe.startup_once
 def start_once():
 	subprocess.Popen(['picom', '-b']),
-	subprocess.Popen(['feh --bg-center '+ wallpaper]),
+	subprocess.Popen(['feh --bg-fill '+ wallpaper]),
 
 
 # Startup applications rather than process can be put here too, Firefox, Evolution ...etc
